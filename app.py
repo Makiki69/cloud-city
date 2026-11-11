@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Cloud City", page_icon="☁️", layout="wide")
 st.markdown(
@@ -258,19 +257,62 @@ def render_island(name: str) -> None:
         table_tab(name, spec, df)
 
 
+# Island positions on the scene, as percentages of its width and height
+ISLAND_POS = {
+    "University": (50, 30),
+    "Research": (22, 50),
+    "Kitchen": (78, 48),
+    "Career": (50, 66),
+    "Memory": (84, 78),
+    "Nonprofit": (36, 88),
+}
+
+SCENE_CSS = """
+<style>
+.cc-scene{position:relative;height:640px;overflow:hidden;border-radius:24px;
+  background:linear-gradient(to bottom,#9ed8ff 0%,#e9f7ff 100%);font-family:"Segoe UI",system-ui,sans-serif;color:#1f3550;}
+.cc-title{position:absolute;top:22px;left:0;right:0;text-align:center;pointer-events:none;}
+.cc-title .cc-h{font-size:2.4rem;font-weight:700;margin:0;}
+.cc-title .cc-sub{opacity:.7;margin-top:4px;}
+.cc-cloud{position:absolute;height:60px;background:rgba(255,255,255,.6);border-radius:100px;animation:cc-drift linear infinite;}
+@keyframes cc-drift{from{transform:translateX(-30%);}to{transform:translateX(130%);}}
+a.cc-island{position:absolute;transform:translate(-50%,-50%);width:200px;text-align:center;text-decoration:none!important;color:#1f3550!important;animation:cc-bob 6s ease-in-out infinite;transition:transform .25s ease;}
+a.cc-island:hover{transform:translate(-50%,-50%) scale(1.07);}
+@keyframes cc-bob{0%,100%{margin-top:0;}50%{margin-top:-12px;}}
+.cc-emoji{font-size:64px;line-height:1;filter:drop-shadow(0 12px 8px rgba(31,53,80,.25));}
+.cc-ground{width:140px;height:24px;margin:-6px auto 0;background:linear-gradient(#b9e6a0,#7cc56b 40%,#8a7055 42%,#5e4a38);border-radius:0 0 60px 60px/0 0 30px 30px;}
+.cc-label{display:inline-block;margin-top:8px;padding:3px 12px;border-radius:12px;background:rgba(255,255,255,.85);font-size:.9rem;font-weight:600;}
+.cc-footer{position:absolute;bottom:10px;width:100%;text-align:center;font-size:.8rem;opacity:.6;pointer-events:none;}
+</style>
+"""
+
+
+def scene_markup() -> str:
+    clouds = [(160, 22, 60, -60), (240, 14, 46, -10), (300, 6, 60, -90)]
+    parts = [SCENE_CSS, '<div class="cc-scene">']
+    for width, top, dur, delay in clouds:
+        parts.append(
+            f'<div class="cc-cloud" style="width:{width}px;top:{top}%;'
+            f'animation-duration:{dur * 1.2:.0f}s;animation-delay:{delay}s"></div>'
+        )
+    parts.append('<div class="cc-title"><div class="cc-h">☁️ Cloud City</div>'
+                 '<div class="cc-sub">Pick an island to start</div></div>')
+    for name, (x, y) in ISLAND_POS.items():
+        spec = ISLANDS[name]
+        parts.append(
+            f'<a class="cc-island" href="?island={name}" style="left:{x}%;top:{y}%;">'
+            f'<div class="cc-emoji">{spec["mascot"]}</div>'
+            f'<div class="cc-ground"></div>'
+            f'<div class="cc-label">{spec["icon"]} {name} Island</div></a>'
+        )
+    parts.append('<div class="cc-footer">Click an island to enter</div></div>')
+    return "".join(parts)
+
+
 selected = st.query_params.get("island")
 
 if selected in ISLANDS:
     render_island(selected)
 else:
-    scene = (Path(__file__).parent / "scene.html").read_text(encoding="utf-8")
-    # The picture is decoration only: clicks inside the embedded frame can't change the page,
-    # so each island is opened by a real button below it.
-    components.html(scene, height=640, scrolling=False)
-    st.markdown("### Visit an island")
-    cols = st.columns(3)
-    for i, (name, spec) in enumerate(ISLANDS.items()):
-        with cols[i % 3]:
-            if st.button(f"{spec['mascot']} {name} Island", key=f"enter_{name}", use_container_width=True):
-                st.query_params["island"] = name
-                st.rerun()
+    # Scene is plain page content (not an iframe) so its island links work.
+    st.markdown(scene_markup(), unsafe_allow_html=True)
