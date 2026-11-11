@@ -64,9 +64,10 @@ def tracker(name: str, spec: dict) -> None:
     else:
         df = pd.DataFrame(spec["defaults"])
     edited = st.data_editor(df, num_rows="dynamic", use_container_width=True, key=f"editor_{name}")
-    if st.button("Save", key=f"save_{name}"):
+    # Autosave: write to disk whenever the table changes, so nothing is lost on restart.
+    if not edited.equals(df):
         edited.to_csv(path, index=False)
-        st.success("Saved.")
+        st.caption("Saved just now.")
 
 
 def render_island(name: str) -> None:
