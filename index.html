@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud City</title>
+<style>
+  :root {
+    --sky-top: #9ed8ff;
+    --sky-bottom: #e9f7ff;
+    --ink: #1f3550;
+    --card: rgba(255,255,255,0.78);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+    overflow: hidden;
+    min-height: 100vh;
+  }
+  header {
+    position: absolute; top: 28px; left: 0; right: 0; text-align: center; z-index: 10;
+    pointer-events: none;
+  }
+  header h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; letter-spacing: 0.5px; }
+  header p { opacity: 0.7; margin-top: 6px; font-size: 0.98rem; }
+
+  /* drifting background clouds */
+  .cloud-bg {
+    position: absolute; background: rgba(255,255,255,0.55); border-radius: 100px;
+    filter: blur(1px); animation: drift linear infinite; z-index: 0;
+  }
+  .cloud-bg::before, .cloud-bg::after {
+    content: ""; position: absolute; background: inherit; border-radius: 50%;
+  }
+  .cloud-bg::before { width: 55%; height: 140%; left: 15%; top: -60%; }
+  .cloud-bg::after  { width: 40%; height: 120%; right: 12%; top: -45%; }
+  @keyframes drift {
+    from { transform: translateX(-30vw); }
+    to   { transform: translateX(130vw); }
+  }
+
+  /* the city */
+  .city {
+    position: absolute; inset: 0; z-index: 2;
+  }
+  .island {
+    position: absolute; width: 220px; text-align: center; text-decoration: none; color: var(--ink);
+    transform: translate(-50%, -50%);
+    animation: bob 6s ease-in-out infinite;
+    transition: transform 0.3s ease;
+  }
+  .island:hover { transform: translate(-50%, -50%) scale(1.06); }
+  .island:nth-child(odd)  { animation-duration: 7s; }
+  .island:nth-child(3n)   { animation-duration: 5.2s; animation-delay: -2s; }
+  @keyframes bob {
+    0%, 100% { margin-top: 0; }
+    50%      { margin-top: -14px; }
+  }
+  .emoji {
+    font-size: 4.2rem; line-height: 1;
+    filter: drop-shadow(0 14px 10px rgba(31,53,80,0.25));
+  }
+  .ground {
+    width: 150px; height: 26px; margin: -6px auto 0;
+    background: linear-gradient(to bottom, #b9e6a0, #7cc56b 40%, #8a7055 42%, #5e4a38);
+    border-radius: 0 0 60px 60px / 0 0 30px 30px;
+    box-shadow: 0 10px 18px rgba(31,53,80,0.18);
+  }
+  .island h2 { font-size: 1.05rem; margin-top: 10px; font-weight: 650; }
+  .island p  {
+    font-size: 0.82rem; margin-top: 4px; opacity: 0.8;
+    background: var(--card); display: inline-block; padding: 3px 10px; border-radius: 12px;
+  }
+
+  /* wispy bridges (decorative) */
+  .bridges { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .bridges path { fill: none; stroke: rgba(255,255,255,0.7); stroke-width: 3; stroke-dasharray: 2 8; stroke-linecap: round; }
+
+  footer {
+    position: absolute; bottom: 14px; width: 100%; text-align: center; font-size: 0.8rem;
+    opacity: 0.55; z-index: 10; pointer-events: none;
+  }
+
+  @media (max-width: 700px) {
+    .island { width: 150px; }
+    .emoji { font-size: 3rem; }
+    .island h2 { font-size: 0.92rem; }
+    .island p { font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Cloud City</h1>
+  <p>Pick an island to start</p>
+</header>
+
+<div class="cloud-bg" style="width:260px;height:60px;top:22%;animation-duration:70s;"></div>
+<div class="cloud-bg" style="width:180px;height:44px;top:70%;animation-duration:95s;animation-delay:-40s;"></div>
+<div class="cloud-bg" style="width:320px;height:72px;top:44%;animation-duration:120s;animation-delay:-70s;"></div>
+
+<svg class="bridges" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path d="M 30 35 Q 50 50 70 35" vector-effect="non-scaling-stroke"/>
+  <path d="M 70 35 Q 85 55 80 75" vector-effect="non-scaling-stroke"/>
+  <path d="M 30 35 Q 20 60 35 80" vector-effect="non-scaling-stroke"/>
+  <path d="M 35 80 Q 60 88 80 75" vector-effect="non-scaling-stroke"/>
+  <path d="M 50 50 Q 50 70 50 62" vector-effect="non-scaling-stroke"/>
+</svg>
+
+<main class="city">
+  <a class="island" href="#university" style="left:50%; top:30%;">
+    <div class="emoji">☁️</div><div class="ground"></div>
+    <h2>University Island</h2><p>classes · deadlines · May 2027</p>
+  </a>
+  <a class="island" href="#research" style="left:22%; top:50%;">
+    <div class="emoji">🧬</div><div class="ground"></div>
+    <h2>Research Island</h2><p>lab · bioinformatics</p>
+  </a>
+  <a class="island" href="#kitchen" style="left:78%; top:48%;">
+    <div class="emoji">🍰</div><div class="ground"></div>
+    <h2>Kitchen Island</h2><p>recipes · meal plans</p>
+  </a>
+  <a class="island" href="#money" style="left:14%; top:76%;">
+    <div class="emoji">💰</div><div class="ground"></div>
+    <h2>Money Garden</h2><p>budget · savings</p>
+  </a>
+  <a class="island" href="#career" style="left:50%; top:66%;">
+    <div class="emoji">💼</div><div class="ground"></div>
+    <h2>Career Castle</h2><p>applications · outreach</p>
+  </a>
+  <a class="island" href="#memory" style="left:84%; top:78%;">
+    <div class="emoji">📖</div><div class="ground"></div>
+    <h2>Memory Library</h2><p>notes · journal</p>
+  </a>
+  <a class="island" href="#nonprofit" style="left:36%; top:88%;">
+    <div class="emoji">🌍</div><div class="ground"></div>
+    <h2>Nonprofit Village</h2><p>volunteering · causes</p>
+  </a>
+</main>
+
+<footer>Each island is one area of life · click to enter</footer>
+
+</body>
+</html>
