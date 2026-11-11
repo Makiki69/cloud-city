@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: transparent; font-family: "Segoe UI", system-ui, sans-serif; }
+  .scene {
+    position: relative; width: 100%; height: 520px; border-radius: 28px; overflow: hidden;
+    background: linear-gradient(to bottom, #ffc9e3 0%, #ffe3f1 40%, #d6f1ff 68%, #9fdcf7 100%);
+    box-shadow: 0 10px 30px rgba(255, 105, 180, 0.25);
+  }
+  .sun {
+    position: absolute; right: 9%; top: 9%; width: 84px; height: 84px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #fff6fb, #ffb3d9 70%);
+    box-shadow: 0 0 40px 10px rgba(255, 179, 217, 0.6);
+  }
+  .cloud {
+    position: absolute; height: 46px; background: #fff; border-radius: 50px;
+    box-shadow: 0 6px 14px rgba(255, 150, 200, 0.25); animation: drift linear infinite; opacity: 0.95;
+  }
+  .cloud::before, .cloud::after {
+    content: ""; position: absolute; background: #fff; border-radius: 50%;
+  }
+  .cloud::before { width: 52px; height: 52px; left: 14px; top: -24px; }
+  .cloud::after  { width: 66px; height: 66px; left: 44px; top: -34px; }
+  @keyframes drift { from { transform: translateX(-20vw); } to { transform: translateX(120vw); } }
+
+  .island {
+    position: absolute; transform: translate(-50%, -50%); width: 170px; text-align: center;
+    text-decoration: none; color: #7a2e5a; animation: bob 6s ease-in-out infinite;
+    transition: transform 0.25s ease;
+  }
+  .island:hover { transform: translate(-50%, -50%) scale(1.08); }
+  .island:nth-of-type(even) { animation-duration: 7.5s; animation-delay: -2s; }
+  @keyframes bob { 0%,100% { margin-top: 0; } 50% { margin-top: -12px; } }
+
+  .land {
+    position: relative; width: 150px; height: 70px; margin: 0 auto;
+    background: radial-gradient(ellipse at 50% 0%, #b8f5a6 0%, #7fd98a 55%, #5fb874 100%);
+    border-radius: 50% 50% 46% 46% / 40% 40% 60% 60%;
+    box-shadow: inset 0 -10px 0 rgba(120, 70, 90, 0.18), 0 12px 16px rgba(255, 130, 180, 0.25);
+  }
+  .land .flower { position: absolute; font-size: 15px; }
+  .emoji { position: absolute; left: 50%; top: -48px; transform: translateX(-50%); font-size: 46px; filter: drop-shadow(0 6px 6px rgba(255,120,170,0.35)); }
+  .label {
+    margin-top: 8px; display: inline-block; padding: 5px 12px; border-radius: 14px;
+    background: rgba(255, 255, 255, 0.85); font-weight: 650; font-size: 0.9rem; color: #7a2e5a;
+    box-shadow: 0 4px 10px rgba(255,120,170,0.2);
+  }
+
+  .valley { position: absolute; bottom: 92px; left: 0; right: 0; height: 90px; }
+  .valley span { position: absolute; font-size: 22px; animation: sway 4s ease-in-out infinite; }
+  @keyframes sway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+  .ocean { position: absolute; bottom: 0; left: 0; right: 0; height: 110px; }
+  .ocean svg { width: 200%; height: 100%; position: absolute; left: 0; animation: wave 9s linear infinite; }
+  @keyframes wave { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .title {
+    position: absolute; top: 22px; left: 0; right: 0; text-align: center; color: #8a2f63;
+    font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 2px 0 rgba(255,255,255,0.6);
+  }
+  .title small { display: block; font-size: 0.9rem; font-weight: 500; opacity: 0.8; }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="sun"></div>
+  <div class="cloud" style="width:120px; top:26%; animation-duration:60s;"></div>
+  <div class="cloud" style="width:90px; top:12%; animation-duration:80s; animation-delay:-30s;"></div>
+  <div class="cloud" style="width:150px; top:48%; animation-duration:95s; animation-delay:-55s;"></div>
+
+  <div class="title">☁️ Cloud City<small>pick an island to step onto</small></div>
+
+  <a class="island" href="?island=University" target="_top" style="left:50%; top:34%;">
+    <div class="emoji">🌸</div><div class="land"><span class="flower" style="left:20px;top:18px">🌷</span><span class="flower" style="right:22px;top:26px">🌼</span></div>
+    <div class="label">☁️ University</div>
+  </a>
+  <a class="island" href="?island=Research" target="_top" style="left:22%; top:52%;">
+    <div class="emoji">🧬</div><div class="land"><span class="flower" style="left:22px;top:20px">🌸</span></div>
+    <div class="label">🧬 Research</div>
+  </a>
+  <a class="island" href="?island=Kitchen" target="_top" style="left:78%; top:50%;">
+    <div class="emoji">🍰</div><div class="land"><span class="flower" style="right:20px;top:20px">🌺</span></div>
+    <div class="label">🍰 Kitchen</div>
+  </a>
+  <a class="island" href="?island=Career" target="_top" style="left:30%; top:72%;">
+    <div class="emoji">💼</div><div class="land"><span class="flower" style="left:18px;top:24px">🌷</span></div>
+    <div class="label">💼 Career</div>
+  </a>
+  <a class="island" href="?island=Memory" target="_top" style="left:70%; top:74%;">
+    <div class="emoji">📖</div><div class="land"><span class="flower" style="right:18px;top:22px">🌸</span></div>
+    <div class="label">📖 Memory</div>
+  </a>
+  <a class="island" href="?island=Nonprofit" target="_top" style="left:50%; top:86%;">
+    <div class="emoji">🌍</div><div class="land"><span class="flower" style="left:24px;top:20px">🌼</span></div>
+    <div class="label">🌍 Nonprofit</div>
+  </a>
+
+  <div class="valley">
+    <span style="left:4%; bottom:4px;">🌸</span><span style="left:9%; bottom:18px; animation-delay:-1s">🌷</span>
+    <span style="left:14%; bottom:2px; animation-delay:-2s">🌼</span><span style="left:20%; bottom:14px; animation-delay:-.5s">🌸</span>
+    <span style="right:5%; bottom:6px; animation-delay:-1.5s">🌷</span><span style="right:12%; bottom:20px; animation-delay:-3s">🌸</span>
+    <span style="right:18%; bottom:2px; animation-delay:-2.5s">🌼</span>
+  </div>
+
+  <div class="ocean">
+    <svg viewBox="0 0 1200 110" preserveAspectRatio="none">
+      <path d="M0 40 Q 50 15 100 40 T 200 40 T 300 40 T 400 40 T 500 40 T 600 40 T 700 40 T 800 40 T 900 40 T 1000 40 T 1100 40 T 1200 40 V110 H0Z" fill="#7fd1f0" opacity="0.8"/>
+      <path d="M0 60 Q 60 35 120 60 T 240 60 T 360 60 T 480 60 T 600 60 T 720 60 T 840 60 T 960 60 T 1080 60 T 1200 60 V110 H0Z" fill="#4fb6e6"/>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

@@ -1,4 +1,7 @@
+from pathlib import Path
+
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Cloud City", page_icon="☁️", layout="centered")
 
@@ -11,20 +14,14 @@ ISLANDS = {
     "Nonprofit": ("🌍", "Volunteering and causes"),
 }
 
-st.title("☁️ Cloud City")
-st.caption("Pick an island to start")
+selected = st.query_params.get("island")
 
-cols = st.columns(3)
-for i, (name, (icon, blurb)) in enumerate(ISLANDS.items()):
-    with cols[i % 3]:
-        with st.container(border=True):
-            st.markdown(f"## {icon}")
-            st.subheader(f"{name} Island")
-            st.write(blurb)
-            if st.button("Enter", key=name, use_container_width=True):
-                st.session_state["island"] = name
-
-if "island" in st.session_state:
-    st.divider()
-    st.header(f"{ISLANDS[st.session_state['island']][0]} {st.session_state['island']} Island")
+if selected in ISLANDS:
+    icon, blurb = ISLANDS[selected]
+    st.markdown("[← Back to Cloud City](/)")
+    st.header(f"{icon} {selected} Island")
+    st.write(blurb)
     st.info("This island is empty for now. Tell me what to build here.")
+else:
+    scene = (Path(__file__).parent / "scene.html").read_text(encoding="utf-8")
+    components.html(scene, height=540)
