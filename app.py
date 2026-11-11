@@ -264,4 +264,13 @@ if selected in ISLANDS:
     render_island(selected)
 else:
     scene = (Path(__file__).parent / "scene.html").read_text(encoding="utf-8")
-    components.html(scene, height=860, scrolling=False)
+    # The picture is decoration only: clicks inside the embedded frame can't change the page,
+    # so each island is opened by a real button below it.
+    components.html(scene, height=640, scrolling=False)
+    st.markdown("### Visit an island")
+    cols = st.columns(3)
+    for i, (name, spec) in enumerate(ISLANDS.items()):
+        with cols[i % 3]:
+            if st.button(f"{spec['mascot']} {name} Island", key=f"enter_{name}", use_container_width=True):
+                st.query_params["island"] = name
+                st.rerun()
